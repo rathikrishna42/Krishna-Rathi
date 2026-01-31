@@ -1,31 +1,42 @@
+<!-- Smooth Scroll -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Krishna Rathi | Creative Brand Strategist</title>
+    
+    <!-- External Library Imports -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <style>
+        /* * DESIGN TOKENS & VARIABLES
+         * Centralizing the visual identity for consistent theme switching.
+         */
         :root {
             --bg-dark: #0a0a0a;
+            --bg-light: #ffffff;
             --accent: #00e5ff;
             --text-main: #f5f5f7;
             --text-dim: #a1a1a6;
-            /* Fix for Mobile Safari height shifts */
             --app-height: 100%;
         }
 
+        /* * GLOBAL RESET & CORE STYLING
+         * Optimized for high-performance scrolling and premium feel.
+         */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             cursor: none;
-            /* Force hardware acceleration on Webkit */
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
         }
@@ -42,9 +53,22 @@
             color: var(--text-main);
             overflow: hidden; /* Locked initially for welcome page */
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            -moz-osx-osx-font-smoothing: grayscale;
+            
+            /* * ULTRA-SMOOTH BACKGROUND TRANSITION 
+             * Increased duration and refined easing for a 10x more fluid effect.
+             */
+            transition: background-color 1.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                        color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Helper class for dynamic light theme switching */
+        body.is-light {
+            background-color: var(--bg-light) !important;
+            color: #000000 !important;
+        }
+
+        /* TYPOGRAPHY CONFIGURATION */
         h1, h2, h3, h4, h5, .font-display {
             font-family: 'Bricolage Grotesque', sans-serif;
             font-weight: 800;
@@ -52,6 +76,7 @@
             line-height: 0.9;
         }
 
+        /* CANVAS BACKGROUND CONTAINER */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -61,12 +86,13 @@
             height: calc(var(--app-height, 1vh) * 100);
             z-index: 1;
             pointer-events: none;
-            opacity: 0.6;
-            /* Webkit performance fix */
+            opacity: 0.5;
             transform: translateZ(0);
         }
 
-        /* Welcome Page Styles - Zoomed Out Aesthetic */
+        /* * WELCOME PAGE (OVERLAY) 
+         * Immersive introduction with grayscale aesthetic.
+         */
         #welcome-page {
             position: fixed;
             top: 0;
@@ -114,11 +140,11 @@
             transform: scale(1.05) translateZ(0);
         }
 
+        /* SCROLL WRAPPER STYLING */
         .main-wrapper {
             position: relative;
             z-index: 10;
             width: 100%;
-            /* Smoother scroll on iOS */
             transform-style: preserve-3d;
         }
 
@@ -133,19 +159,19 @@
             will-change: transform, opacity;
         }
 
-        /* Spacing Reduction for Mobile */
+        /* RESPONSIVE OPTIMIZATIONS (MOBILE) */
         @media (max-width: 768px) {
-            #collab, #trusted, #value-add {
+            #collab, #trusted, #value-add, #stats, #analytics, #philosophy, #contact {
                 min-height: auto !important;
-                padding-top: 3rem !important;
-                padding-bottom: 3rem !important;
+                padding-top: 4rem !important;
+                padding-bottom: 4rem !important;
             }
             .welcome-content {
                 transform: scale(1);
             }
         }
 
-        /* Minimal UI Elements */
+        /* CUSTOM CURSOR SYSTEM */
         .cursor {
             width: 8px;
             height: 8px;
@@ -173,7 +199,9 @@
             * { cursor: auto !important; }
         }
 
-        /* Image Styling */
+        /* * REVEAL COMPONENTS 
+         * Premium image reveal effects for stage elements.
+         */
         .reveal-img-wrap {
             position: relative;
             overflow: hidden;
@@ -195,7 +223,7 @@
             filter: grayscale(0%);
         }
 
-        /* Typography Animations */
+        /* TYPOGRAPHY ANIMATION HELPERS */
         .split-line {
             overflow: hidden;
             display: block;
@@ -208,7 +236,9 @@
             will-change: transform;
         }
 
-        /* Custom Navigation */
+        /* * NAVIGATION 
+         * Intelligent navigation that adapts to scroll context.
+         */
         .nav-fixed {
             position: fixed;
             top: 0;
@@ -220,7 +250,19 @@
             align-items: center;
             z-index: 100;
             mix-blend-mode: difference;
-            -webkit-backdrop-filter: blur(0px); /* Specific to Safari blend issues */
+        }
+
+        @media (max-width: 768px) {
+            .nav-fixed {
+                mix-blend-mode: normal;
+                background: rgba(10, 10, 10, 0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+            body.is-light .nav-fixed {
+                background: rgba(255, 255, 255, 0.2);
+                color: #000;
+            }
         }
 
         @media (min-width: 768px) {
@@ -239,7 +281,7 @@
             letter-spacing: 0.2em;
         }
 
-        /* Scroll Progress Vertical Bar */
+        /* PROGRESS TRACKER */
         .progress-wrap {
             position: fixed;
             right: 1.5rem;
@@ -262,7 +304,9 @@
             padding-left: 1.5rem;
         }
 
-        /* Premium Bubble Effect Cards */
+        /* * COLLABORATION CARDS 
+         * Dynamic interaction states for collab options.
+         */
         .collab-card {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -271,6 +315,11 @@
             overflow: hidden;
             z-index: 1;
             transform: translateZ(0);
+        }
+
+        body.is-light .collab-card {
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .collab-card::before {
@@ -292,10 +341,9 @@
 
         @media (max-width: 768px) {
             .collab-card.active-mobile-glow {
-                background: rgba(255, 255, 255, 0.06);
-                border-color: var(--accent);
-                transform: translateY(-10px) scale(1.02);
-                box-shadow: 0 20px 40px -10px rgba(0, 229, 255, 0.2);
+                background: rgba(0, 229, 255, 0.08) !important;
+                border-color: var(--accent) !important;
+                transform: translateY(-5px);
             }
             .collab-card.active-mobile-glow::before {
                 opacity: 0.25;
@@ -323,25 +371,8 @@
             z-index: -1;
         }
 
-        @media (max-width: 768px) {
-            .collab-number {
-                right: 5px !important;
-                bottom: -5px !important;
-                font-size: 7.5rem !important;
-                opacity: 0.05 !important;
-            }
-        }
-
-        .collab-card:hover .collab-number {
-            opacity: 0.08;
-            transform: scale(1.1);
-            color: var(--accent);
-        }
-
-        /* Analytics Chart Aesthetic */
-        .chart-glow {
-            filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.3));
-        }
+        /* ANIMATION KEYFRAMES */
+        .chart-glow { filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.3)); }
 
         .levitate {
             animation: float 4s ease-in-out infinite;
@@ -353,7 +384,9 @@
             50% { transform: translateY(-15px); }
         }
 
-        /* Bento Grid 3D Aesthetic */
+        /* * BENTO GRID 
+         * Structured grid for value propositions.
+         */
         .bento-grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
@@ -401,7 +434,7 @@
             line-height: 1.1;
             text-transform: uppercase;
             margin-bottom: 1rem;
-            color: #fff !important;
+            color: inherit;
             letter-spacing: -0.02em;
         }
 
@@ -425,7 +458,7 @@
             }
         }
 
-        /* Continuous Floating Keyframes */
+        /* FLOATING 3D ELEMENTS */
         @keyframes float3d {
             0%, 100% { transform: translateY(0px) rotateX(0deg); }
             50% { transform: translateY(-10px) rotateX(2deg); }
@@ -436,7 +469,7 @@
             will-change: transform;
         }
 
-        /* Background Image Specific Styling */
+        /* BACKGROUND DECORATIVE IMAGES */
         .section-bg-image {
             position: absolute;
             top: 0;
@@ -453,7 +486,7 @@
         
         @media (max-width: 768px) {
             #value-add .section-bg-image {
-                opacity: 0.45;
+                opacity: 0.35;
                 object-fit: contain;
                 width: 90%;
                 height: 90%;
@@ -462,7 +495,7 @@
             }
         }
 
-        /* Refined Welcome Page Elements */
+        /* TEXT LINE ANIMATIONS */
         .welcome-line {
             overflow: hidden;
             display: block;
@@ -487,7 +520,10 @@
 </head>
 <body>
 
-    <!-- Welcome Page Overlay -->
+    <!-- 
+     * WELCOME PAGE OVERLAY
+     * The initial greeting to set the tone of the experience.
+     -->
     <div id="welcome-page">
         <img src="https://res.cloudinary.com/dj159rgsr/image/upload/v1769669345/494170991_18500361148005369_768825489208285612_n_ajtr3n.jpg" class="welcome-bg-img" alt="Krishna Rathi Aesthetic Intro">
         <div class="welcome-content">
@@ -520,6 +556,7 @@
         </div>
     </div>
 
+    <!-- MAIN INTERFACE NAVIGATION -->
     <nav class="nav-fixed">
         <div class="font-display text-lg md:text-xl tracking-tighter">KR.</div>
         <div class="flex items-center gap-3 md:gap-8">
@@ -537,14 +574,16 @@
         </div>
     </nav>
 
+    <!-- UTILITY OVERLAYS -->
     <div class="cursor" id="cursor"></div>
     <div class="cursor-ring" id="cursorRing"></div>
     <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
 
+    <!-- WEBGL BACKGROUND -->
     <div id="canvas-container"></div>
 
     <main class="main-wrapper">
-        <!-- STAGE 1: THE HOOK -->
+        <!-- STAGE 1: HERO (THE HOOK) -->
         <section class="stage" id="hero">
             <div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 <div class="lg:col-span-8">
@@ -589,7 +628,7 @@
             </div>
         </section>
 
-        <!-- STAGE 2: THE PROOF -->
+        <!-- STAGE 2: WORK (THE PROOF) -->
         <section class="stage" id="work">
             <div class="w-full">
                 <div class="flex flex-col md:flex-row justify-between items-start mb-12 md:mb-20">
@@ -599,21 +638,21 @@
                     </p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full">
-                    <a href="https://www.instagram.com/reel/C1Xf0DASYic/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="group cursor-pointer block">
+                    <a href="https://www.instagram.com/reel/C1Xf0DASYic/" target="_blank" class="group block">
                         <div class="reveal-img-wrap aspect-[4/5] mb-6">
                             <img src="https://res.cloudinary.com/dj159rgsr/image/upload/v1768856470/502735115_1211156567377919_2077984617445836119_n_eu5fxo.jpg" class="reveal-img parallax-img" alt="Uniqlo Reel Thumbnail">
                         </div>
                         <h4 class="text base md:text-lg font-bold uppercase">UNIQLO</h4>
                         <span class="text-[10px] text-cyan-400 tracking-widest font-bold">8.2M VIEWS</span>
                     </a>
-                    <a href="https://www.instagram.com/reel/C17gXkLrLmK/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="group cursor-pointer block">
+                    <a href="https://www.instagram.com/reel/C17gXkLrLmK/" target="_blank" class="group block">
                         <div class="reveal-img-wrap aspect-[4/5] mb-6">
                             <img src="https://res.cloudinary.com/dj159rgsr/image/upload/v1768856469/487830775_1712185726034996_1688270866778231478_n_hzi1rl.jpg" class="reveal-img parallax-img" alt="Dawn Cafe Reel Thumbnail">
                         </div>
                         <h4 class="text-base md:text-lg font-bold uppercase">DAWN CAFÉ</h4>
                         <span class="text-[10px] text-cyan-400 tracking-widest font-bold">10.9M VIEWS</span>
                     </a>
-                    <a href="https://www.instagram.com/reel/CzwjoOsy0tP/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="group cursor-pointer block">
+                    <a href="https://www.instagram.com/reel/CzwjoOsy0tP/" target="_blank" class="group block">
                         <div class="reveal-img-wrap aspect-[4/5] mb-6">
                             <img src="https://res.cloudinary.com/dj159rgsr/image/upload/v1768856470/499652894_602883829480806_8415801849538003738_n_unzsc3.jpg" class="reveal-img parallax-img" alt="World Cup Reel Thumbnail">
                         </div>
@@ -625,7 +664,7 @@
             </div>
         </section>
 
-        <!-- STAGE 3: SCALE + QUALITY -->
+        <!-- STAGE 3: SCALE (SCALE + QUALITY) -->
         <section class="stage" id="stats">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-20 items-center w-full">
                 <div>
@@ -678,86 +717,7 @@
             </div>
         </section>
 
-        <!-- STAGE 3.75: WHAT KRISHNA BRINGS TO THE TABLE -->
-        <section class="stage relative overflow-hidden bg-[#0a0a0a] text-white" id="value-add">
-            <img src="https://res.cloudinary.com/dj159rgsr/image/upload/v1769759174/ChatGPT_Image_Jan_30_2026_01_15_54_PM_sxd8as.png" 
-                 class="section-bg-image parallax-bg-img" alt="Background Texture">
-
-            <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 120px 120px;"></div>
-            <div class="absolute top-1/4 -right-10 w-96 h-96 bg-cyan-500/5 blur-[150px] rounded-full"></div>
-
-            <div class="w-full max-w-7xl relative z-10">
-                <div class="mb-16 md:mb-20 text-center flex flex-col items-center">
-                    <span class="text-[10px] md:text-xs uppercase tracking-[0.6em] text-cyan-400 mb-6 block font-bold" id="valSub">The Strategic Edge</span>
-                    <h2 class="text-5xl md:text-8xl leading-[0.85] text-white text-center" id="valTitle">
-                        Why Brands <br>Work with Krishna.
-                    </h2>
-                    <p class="mt-8 text-lg md:text-xl text-gray-400 font-light italic">More than reach. <span class="text-white">Measurable relevance.</span></p>
-                </div>
-
-                <div class="bento-grid" id="valGrid">
-                    <div class="bento-card col-span-12 lg:col-span-8 floating-element" style="animation-delay: 0s">
-                        <span class="val-num">01 / BEHAVIORAL INTEL</span>
-                        <h4>Audience Intelligence, Not Guesswork</h4>
-                        <p>A deep, behaviour-level understanding of what audiences care about, engage with, and save — not just what they like or view.</p>
-                    </div>
-
-                    <div class="bento-card col-span-12 lg:col-span-4 lg:row-span-2 floating-element" style="animation-delay: 0.5s">
-                        <span class="val-num">02 / SIGNAL</span>
-                        <h4>Engagement That Signals Real Interest</h4>
-                        <p>Consistently delivering engagement rates significantly above industry benchmarks — driven by relevance, not volume.</p>
-                    </div>
-
-                    <div class="bento-card col-span-12 lg:col-span-4 floating-element" style="animation-delay: 1s">
-                        <span class="val-num">03 / NATIVE</span>
-                        <h4>Organic Case Studies</h4>
-                        <p>Brand integrations built around real use-cases and contextual storytelling, resulting in content that feels native.</p>
-                    </div>
-
-                    <div class="bento-card col-span-12 lg:col-span-4 floating-element" style="animation-delay: 1s">
-                        <span class="val-num">04 / SEO</span>
-                        <h4>Built for Discoverability</h4>
-                        <p>Every collaboration is structured to remain searchable and valuable over time through SEO-optimised narratives.</p>
-                    </div>
-
-                    <div class="bento-card col-span-12 lg:col-span-5 floating-element" style="animation-delay: 2s">
-                        <span class="val-num">05 / PURPOSE</span>
-                        <h4>Introductions with Clarity</h4>
-                        <p>Brands are introduced with intent — helping audiences understand why a brand exists before asking them to notice it.</p>
-                    </div>
-
-                    <div class="bento-card col-span-12 lg:col-span-3 floating-element" style="animation-delay: 2.5s">
-                        <span class="val-num">06 / AMPLIFIED</span>
-                        <h4>Selective Whitelisting</h4>
-                        <p>Selective rights that allow brands to amplify high-performing content with narrative control.</p>
-                    </div>
-
-                    <div class="bento-card col-span-12 lg:col-span-4 floating-element" style="animation-delay: 3s">
-                        <span class="val-num">07 / RETENTION</span>
-                        <h4>High Save-to-Reach Signals</h4>
-                        <p>Content designed to be revisited — reflected in consistently strong save-to-reach ratios.</p>
-                    </div>
-
-                    <div class="bento-card col-span-12 lg:col-span-7 floating-element" style="animation-delay: 3.5s">
-                        <span class="val-num">08 / USP: PSYCH-LEAD</span>
-                        <h4>Psychology-Led Storytelling</h4>
-                        <p>A clean, communication style rooted in behavioural psychology — optimised for comprehension and trust.</p>
-                    </div>
-
-                    <div class="bento-card col-span-12 lg:col-span-5 floating-element" style="animation-delay: 4s">
-                        <span class="val-num">09 / COMPOUNDING</span>
-                        <h4>Assets, Not Moments</h4>
-                        <p>Every piece is designed as an asset — creating long-term brand recall rather than short-term exposure.</p>
-                    </div>
-                </div>
-                
-                <div class="mt-20 text-center max-w-2xl mx-auto opacity-50 italic font-light text-sm md:text-base">
-                    "Krishna partners with brands to build understanding, trust, and lasting relevance — not one-off visibility."
-                </div>
-            </div>
-        </section>
-
-        <!-- STAGE 3.5: PERFORMANCE ANALYTICS -->
+        <!-- STAGE 3.5: PERFORMANCE ANALYTICS (MONTHLY GROWTH) -->
         <section class="stage" id="analytics">
             <div class="w-full">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-4">
@@ -820,7 +780,7 @@
                                 <h4 class="text-base md:text-xl font-bold uppercase tracking-tight">Follower Growth</h4>
                                 <span class="text-cyan-400 font-bold text-sm md:text-base">+62.61%</span>
                             </div>
-                            <p class="text-[10px] md:text-xs text-gray-400 leading-relaxed">Growth rate surged to 1.22% during this period, significantly outperforming benchmarks.</p>
+                            <p class="text-[10px] md:text-xs text-gray-400 leading-relaxed">Growth rate surged during this period, significantly outperforming benchmarks.</p>
                         </div>
 
                         <div class="p-6 md:p-8 border border-white/5 bg-white/[0.02] rounded-3xl levitate" style="animation-delay: 0.2s">
@@ -844,8 +804,8 @@
             </div>
         </section>
 
-        <!-- STAGE 4: WHY IT SCALES -->
-        <section class="stage bg-white text-black" id="philosophy">
+        <!-- STAGE 4: PHILOSOPHY (THINKING OVER INFLUENCE) -->
+        <section class="stage" id="philosophy">
             <div class="w-full">
                 <h2 class="text-[clamp(2.5rem,10vw,12rem)] mb-12 md:mb-20 leading-[0.85]">Thinking <br>Over <br>Influence.</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
@@ -874,7 +834,86 @@
             </div>
         </section>
 
-        <!-- STAGE 6: WAYS TO COLLABORATE -->
+        <!-- STAGE 5: VALUE (WHAT KRISHNA BRINGS) -->
+        <section class="stage relative overflow-hidden" id="value-add">
+            <img src="https://res.cloudinary.com/dj159rgsr/image/upload/v1769759174/ChatGPT_Image_Jan_30_2026_01_15_54_PM_sxd8as.png" 
+                 class="section-bg-image parallax-bg-img" alt="Background Texture">
+
+            <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 120px 120px;"></div>
+            <div class="absolute top-1/4 -right-10 w-96 h-96 bg-cyan-500/5 blur-[150px] rounded-full"></div>
+
+            <div class="w-full max-w-7xl relative z-10">
+                <div class="mb-16 md:mb-20 text-center flex flex-col items-center">
+                    <span class="text-[10px] md:text-xs uppercase tracking-[0.6em] text-cyan-400 mb-6 block font-bold" id="valSub">The Strategic Edge</span>
+                    <h2 class="text-5xl md:text-8xl leading-[0.85] text-center" id="valTitle">
+                        Why Brands <br>Work with Krishna.
+                    </h2>
+                    <p class="mt-8 text-lg md:text-xl text-gray-400 font-light italic">More than reach. <span class="text-white">Measurable relevance.</span></p>
+                </div>
+
+                <div class="bento-grid" id="valGrid">
+                    <div class="bento-card col-span-12 lg:col-span-8 floating-element" style="animation-delay: 0s">
+                        <span class="val-num">01 / BEHAVIORAL INTEL</span>
+                        <h4>Audience Intelligence, Not Guesswork</h4>
+                        <p>A deep, behaviour-level understanding of what audiences care about, engage with, and save — not just what they like or view.</p>
+                    </div>
+
+                    <div class="bento-card col-span-12 lg:col-span-4 lg:row-span-2 floating-element" style="animation-delay: 0.5s">
+                        <span class="val-num">02 / SIGNAL</span>
+                        <h4>Engagement That Signals Real Interest</h4>
+                        <p>Consistently delivering engagement rates significantly above industry benchmarks — driven by relevance, not volume.</p>
+                    </div>
+
+                    <div class="bento-card col-span-12 lg:col-span-4 floating-element" style="animation-delay: 1s">
+                        <span class="val-num">03 / NATIVE</span>
+                        <h4>Organic Case Studies</h4>
+                        <p>Brand integrations built around real use-cases and contextual storytelling, resulting in content that feels native.</p>
+                    </div>
+
+                    <div class="bento-card col-span-12 lg:col-span-4 floating-element" style="animation-delay: 1.2s">
+                        <span class="val-num">04 / SEO</span>
+                        <h4>Built for Discoverability</h4>
+                        <p>Every collaboration is structured to remain searchable and valuable over time through SEO-optimised narratives.</p>
+                    </div>
+
+                    <div class="bento-card col-span-12 lg:col-span-5 floating-element" style="animation-delay: 2s">
+                        <span class="val-num">05 / PURPOSE</span>
+                        <h4>Introductions with Clarity</h4>
+                        <p>Brands are introduced with intent — helping audiences understand why a brand exists before asking them to notice it.</p>
+                    </div>
+
+                    <div class="bento-card col-span-12 lg:col-span-3 floating-element" style="animation-delay: 2.5s">
+                        <span class="val-num">06 / AMPLIFIED</span>
+                        <h4>Selective Whitelisting</h4>
+                        <p>Selective rights that allow brands to amplify high-performing content with narrative control.</p>
+                    </div>
+
+                    <div class="bento-card col-span-12 lg:col-span-4 floating-element" style="animation-delay: 3s">
+                        <span class="val-num">07 / RETENTION</span>
+                        <h4>High Save-to-Reach Signals</h4>
+                        <p>Content designed to be revisited — reflected in consistently strong save-to-reach ratios.</p>
+                    </div>
+
+                    <div class="bento-card col-span-12 lg:col-span-7 floating-element" style="animation-delay: 3.5s">
+                        <span class="val-num">08 / USP: PSYCH-LEAD</span>
+                        <h4>Psychology-Led Storytelling</h4>
+                        <p>A clean, communication style rooted in behavioural psychology — optimised for comprehension and trust.</p>
+                    </div>
+
+                    <div class="bento-card col-span-12 lg:col-span-5 floating-element" style="animation-delay: 4s">
+                        <span class="val-num">09 / COMPOUNDING</span>
+                        <h4>Assets, Not Moments</h4>
+                        <p>Every piece is designed as an asset — creating long-term brand recall rather than short-term exposure.</p>
+                    </div>
+                </div>
+                
+                <div class="mt-20 text-center max-w-2xl mx-auto opacity-50 italic font-light text-sm md:text-base">
+                    "Krishna partners with brands to build understanding, trust, and lasting relevance — not one-off visibility."
+                </div>
+            </div>
+        </section>
+
+        <!-- STAGE 6: COLLABORATE (WAYS TO COLLABORATE) -->
         <section class="stage flex-col" id="collab">
             <div class="w-full mb-12 md:mb-20 text-center">
                 <span class="text-[10px] md:text-xs uppercase tracking-[0.4em] text-gray-500 mb-6 block font-medium">Ways to Collaborate</span>
@@ -891,7 +930,7 @@
                     <div class="collab-number">01</div>
                 </div>
 
-                <div class="collab-card p-8 md:p-12 rounded-[2rem] md:rounded-[2.5rem] group cursor-pointer bg-white/[0.04] levitate" style="animation-delay: 0.2s">
+                <div class="collab-card p-8 md:p-12 rounded-[2rem] md:rounded-[2.5rem] group cursor-pointer levitate" style="animation-delay: 0.2s">
                     <div class="relative z-10 h-full flex flex-col">
                         <h5 class="text-2xl md:text-3xl mb-6 uppercase tracking-tight">Build + Amplify</h5>
                     </div>
@@ -907,7 +946,7 @@
             </div>
         </section>
 
-        <!-- STAGE 7: TRUSTED -->
+        <!-- STAGE 7: TRUSTED (CLIENTS & FORUMS) -->
         <section class="stage" id="trusted">
             <div class="w-full text-center">
                 <h3 class="text-xl md:text-3xl mb-12 md:mb-16 opacity-50 uppercase tracking-[0.3em] font-light">Trusted to Speak, Trusted to Build</h3>
@@ -920,19 +959,16 @@
             </div>
         </section>
 
-        <!-- STAGE 8: INVITATION -->
+        <!-- STAGE 8: CONTACT (INVITATION) -->
         <section class="stage" id="contact">
             <div class="w-full text-center">
-                <h2 class="text-[clamp(2rem,8vw,10rem)] leading-[0.85] mb-12">Let's build <br>something <br><span class="text-cyan-400">Remembered.</span></h2>
+                <h2 class="text-[clamp(2.5rem,8vw,8rem)] leading-[0.85] mb-12">Let's build <br>something <br><span class="text-cyan-400">Remembered.</span></h2>
                 
-                <div class="max-w-4xl mx-auto p-6 md:p-16 rounded-[1.5rem] md:rounded-[2.5rem] border border-white/5 bg-white/[0.01] backdrop-blur-sm text-left levitate">
+                <div class="max-w-4xl mx-auto p-8 md:p-16 rounded-[2rem] border border-white/5 bg-white/[0.01] backdrop-blur-sm text-left levitate">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6">
                         <div>
                             <h3 class="text-xl md:text-3xl font-display mb-2 uppercase tracking-tighter">Collaboration Enquiry Form</h3>
                             <p class="text-[8px] md:text-[10px] uppercase tracking-[0.3em] text-cyan-400 font-bold">Krishna Rathi × FourTwo Creative Media</p>
-                        </div>
-                        <div class="hidden md:block">
-                            <span class="text-[10px] uppercase tracking-widest text-gray-500 font-medium">Secure Channel // Establish Link</span>
                         </div>
                     </div>
 
@@ -989,20 +1025,18 @@
              </a>
         </div>
 
-        <footer class="p-8 md:p-10 border-t border-white/5 flex flex-col md:flex-row justify-between text-[8px] md:text-[10px] uppercase tracking-widest opacity-40 gap-6">
-            <div class="flex flex-col gap-1">
-                <span>&copy; 2025 Krishna Rathi</span>
-                <span>FourTwo Creative Media</span>
-            </div>
-            <div class="flex flex-col md:text-right gap-1">
-                <span>Brand Strategist</span>
-                <span>Cultural Relevance x Execution</span>
-            </div>
+        <footer class="p-8 border-t border-white/5 flex flex-col md:flex-row justify-between text-[10px] uppercase tracking-widest opacity-40 gap-6">
+            <span>&copy; 2025 Krishna Rathi // FourTwo Creative Media</span>
+            <span>Brand Strategist</span>
         </footer>
     </main>
 
     <script>
-        // --- Safari Viewport Fix ---
+        /* * APPLICATION CORE LOGIC
+         * Initializing WebGL, GSAP, and Scroll systems for a high-end web experience.
+         */
+
+        // Fix for Mobile Safari dynamic height shifts
         const setAppHeight = () => {
             const doc = document.documentElement;
             doc.style.setProperty('--app-height', `${window.innerHeight / 100}px`);
@@ -1010,23 +1044,23 @@
         window.addEventListener('resize', setAppHeight);
         setAppHeight();
 
-        // --- THREE.JS: LIQUID MESH BACKGROUND ---
+        // --- THREE.JS: LIQUID MESH BACKGROUND (OPTIMIZED) ---
         let scene, camera, renderer, mesh;
         function initThree() {
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 2;
+            camera.position.z = 2.5;
 
             renderer = new THREE.WebGLRenderer({ 
                 antialias: true, 
                 alpha: true,
-                powerPreference: "high-performance" // Specific hint for Safari/Mobile
+                powerPreference: "high-performance"
             });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-            const geometry = new THREE.PlaneBufferGeometry(5, 3, 32, 32);
+            const geometry = new THREE.PlaneBufferGeometry(5, 5, 24, 24);
             const material = new THREE.MeshBasicMaterial({ 
                 color: 0x444444, 
                 wireframe: true, 
@@ -1039,6 +1073,7 @@
             animate();
         }
 
+        // Dedicated animation loop for Three.js
         function animate() {
             requestAnimationFrame(animate);
             const time = performance.now() * 0.0002;
@@ -1046,67 +1081,72 @@
             for(let i=0; i<pos.count; i++) {
                 const x = pos.getX(i);
                 const y = pos.getY(i);
-                const z = Math.sin(x * 2 + time) * 0.2 + Math.cos(y * 2 + time) * 0.2;
+                const z = Math.sin(x * 1.5 + time) * 0.15 + Math.cos(y * 1.5 + time) * 0.15;
                 pos.setZ(i, z);
             }
             pos.needsUpdate = true;
-            mesh.rotation.z = time * 0.1;
+            mesh.rotation.z = time * 0.05;
             renderer.render(scene, camera);
         }
 
-        // --- GSAP REVEALS & CONTINUOUS EFFECTS ---
+        // --- GSAP & SCROLL TRIGGER CONFIGURATION ---
         gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 
         function initGSAP() {
-            // Welcome Page Animation Timeline
+            // Welcome Page Animation Timeline (Sequenced Reveals)
             const welcomeTl = gsap.timeline();
-            welcomeTl.to("#welcomeTop", { opacity: 1, y: 0, duration: 1, delay: 0.5 })
-                     .to("#welcomeTitle", { opacity: 1, y: 0, duration: 1 }, "-=0.5")
-                     .to(".welcome-line-inner", { 
-                        opacity: 1, 
-                        y: 0, 
-                        stagger: 0.2, 
-                        duration: 1.2,
-                        ease: "power3.out"
-                     }, "-=0.5")
-                     .to("#enterBtn", { opacity: 1, y: 0, duration: 1 }, "-=0.4")
-                     .to("#welcomeRegards", { opacity: 0.4, y: 0, duration: 1 }, "-=0.5");
+            welcomeTl.to("#welcomeTop, #welcomeTitle, .welcome-line-inner, #enterBtn, #welcomeRegards", { 
+                opacity: 1, 
+                y: 0, 
+                duration: 1, 
+                stagger: 0.15, 
+                ease: "power3.out" 
+            });
 
-            // WELCOME PARALLAX
+            // Interactive Parallax for Welcome Overlay Background
             document.getElementById('welcome-page').addEventListener('mousemove', (e) => {
                 const moveX = (e.clientX - window.innerWidth / 2) * 0.015;
                 const moveY = (e.clientY - window.innerHeight / 2) * 0.015;
-                gsap.to('.welcome-bg-img', { 
-                    x: moveX, 
-                    y: moveY, 
-                    duration: 1.5,
-                    ease: "power2.out"
-                });
+                gsap.to('.welcome-bg-img', { x: moveX, y: moveY, duration: 1.5, ease: "power2.out" });
             });
 
+            // Enter Button Interaction (Main App Reveal)
             document.getElementById('enterBtn').addEventListener('click', () => {
                 gsap.to("#welcome-page", { 
                     opacity: 0, 
                     pointerEvents: "none", 
-                    duration: 1.5, 
+                    duration: 1.2, 
                     ease: "expo.inOut",
                     onComplete: () => {
                         document.getElementById('welcome-page').style.display = 'none';
                         document.body.style.overflow = 'auto';
+                        gsap.to(".split-inner", { y: 0, rotate: 0, duration: 1.5, stagger: 0.1, ease: "expo.out" });
                         ScrollTrigger.refresh();
                     }
                 });
-                
-                gsap.to(".split-inner", {
-                    y: 0,
-                    rotate: 0,
-                    duration: 1.8,
-                    stagger: 0.15,
-                    ease: "expo.out",
-                    delay: 0.5
+            });
+
+            /* * ULTRA-FLUID THEME TRANSITIONS
+             * Orchestrating the background color changes for a fluid visual journey.
+             */
+            const transitions = [
+                { trigger: "#hero", isLight: false },
+                { trigger: "#philosophy", isLight: true },
+                { trigger: "#value-add", isLight: false },
+                { trigger: "#collab", isLight: true }, // Collaboration section gets a smooth light fade
+                { trigger: "#contact", isLight: false }
+            ];
+
+            transitions.forEach(config => {
+                ScrollTrigger.create({
+                    trigger: config.trigger,
+                    start: "top 60%", // Trigger slightly earlier for a more anticipatory feel
+                    onEnter: () => document.body.classList.toggle('is-light', config.isLight),
+                    onEnterBack: () => document.body.classList.toggle('is-light', config.isLight)
                 });
             });
 
+            // Scroll Progress Visualizer
             gsap.to("#progressBar", {
                 height: "100%",
                 ease: "none",
@@ -1114,127 +1154,50 @@
                     trigger: ".main-wrapper",
                     start: "top top",
                     end: "bottom bottom",
-                    scrub: 0.5
+                    scrub: 0.3
                 }
             });
 
+            // Parallax Imaging
             gsap.utils.toArray('.parallax-img').forEach(img => {
                 gsap.to(img, {
-                    y: "-10%",
+                    y: "-12%",
                     ease: "none",
-                    scrollTrigger: {
-                        trigger: img.parentElement,
-                        start: "top bottom",
-                        end: "bottom top",
-                        scrub: true
-                    }
+                    scrollTrigger: { trigger: img.parentElement, scrub: true }
                 });
             });
 
-            // Mobile Centered Glow for Collaboration Cards
+            // Vector Chart Drawing Animation
+            gsap.from(".animate-draw", {
+                strokeDasharray: 1000,
+                strokeDashoffset: 1000,
+                duration: 2.5,
+                scrollTrigger: { trigger: "#analytics", start: "top 70%" }
+            });
+
+            // Bento Grid Entrance Sequencing
+            gsap.to(".bento-card", {
+                opacity: 1,
+                y: 0,
+                stagger: 0.1,
+                duration: 0.8,
+                ease: "power3.out",
+                scrollTrigger: { trigger: "#value-add", start: "top 60%" }
+            });
+
+            // Mobile Interaction State: Scroll-based Glow for Cards
             if (window.innerWidth <= 768) {
                 gsap.utils.toArray('.collab-card').forEach(card => {
                     ScrollTrigger.create({
                         trigger: card,
-                        start: "top center", 
+                        start: "top center",
                         end: "bottom center",
-                        onToggle: self => {
-                            if (self.isActive) {
-                                card.classList.add('active-mobile-glow');
-                            } else {
-                                card.classList.remove('active-mobile-glow');
-                            }
-                        }
+                        onToggle: self => card.classList.toggle('active-mobile-glow', self.isActive)
                     });
                 });
             }
 
-            document.querySelectorAll('.stage').forEach(stage => {
-                if(stage.id === 'hero' || stage.id === 'value-add') return;
-                gsap.from(stage.children, {
-                    scrollTrigger: {
-                        trigger: stage,
-                        start: "top 85%",
-                        toggleActions: "play none none reverse"
-                    },
-                    y: 40,
-                    opacity: 0,
-                    duration: 1.2,
-                    ease: "power3.out",
-                    stagger: 0.1
-                });
-            });
-
-            // Theme Transition 1: White background sections
-            gsap.to("body", {
-                backgroundColor: "#ffffff",
-                color: "#000000",
-                scrollTrigger: {
-                    trigger: "#philosophy",
-                    start: "top center",
-                    end: "bottom center",
-                    scrub: true
-                }
-            });
-
-            // Theme Transition 2: Bento / Value Section (Back to Dark)
-            ScrollTrigger.create({
-                trigger: "#value-add",
-                start: "top center",
-                onEnter: () => {
-                    gsap.to("body", { backgroundColor: "#0a0a0a", color: "#f5f5f7", duration: 0.4 });
-                    gsap.to(".bento-card", { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: "power4.out" });
-                },
-                onLeaveBack: () => {}
-            });
-
-            // Theme Transition 3: Collaboration (Ensure visibility)
-            gsap.to("body", {
-                backgroundColor: "#ffffff",
-                color: "#000000",
-                scrollTrigger: {
-                    trigger: "#collab",
-                    start: "top center",
-                    end: "bottom center",
-                    scrub: true
-                }
-            });
-
-            // Bento Grid Entrance Animation
-            gsap.from("#valTitle, #valSub", {
-                scrollTrigger: {
-                    trigger: "#value-add",
-                    start: "top 75%",
-                },
-                y: 50,
-                opacity: 0,
-                duration: 1.2,
-                stagger: 0.2,
-                ease: "power4.out"
-            });
-
-            // Subtle Parallax for the Background Image in Value Section
-            gsap.to(".parallax-bg-img", {
-                y: "20%",
-                ease: "none",
-                scrollTrigger: {
-                    trigger: "#value-add",
-                    start: "top bottom",
-                    end: "bottom top",
-                    scrub: true
-                }
-            });
-
-            gsap.from(".animate-draw", {
-                strokeDasharray: 1000,
-                strokeDashoffset: 1000,
-                duration: 3,
-                scrollTrigger: {
-                    trigger: "#analytics",
-                    start: "top 70%"
-                }
-            });
-
+            // Smooth Scroll Navigation Handler
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', (e) => {
                     const targetId = anchor.getAttribute('href');
@@ -1248,6 +1211,7 @@
                 });
             });
 
+            // Hero CTA Scroll Trigger
             document.getElementById('scrollEnterBtn').addEventListener('click', () => {
                 gsap.to(window, {
                     duration: 1.2,
@@ -1257,65 +1221,57 @@
             });
         }
 
-        const cursor = document.getElementById('cursor');
-        const ring = document.getElementById('cursorRing');
-
-        document.addEventListener('mousemove', (e) => {
-            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
-            gsap.to(ring, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.25 });
-        });
-
-        document.querySelectorAll('a, button, .group, .collab-card, .bento-card, input, textarea, label').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                gsap.to(ring, { scale: 1.5, borderColor: '#00e5ff', duration: 0.3 });
-                gsap.to(cursor, { scale: 0, duration: 0.3 });
+        // --- CUSTOM CURSOR (DESKTOP ONLY) ---
+        if (window.innerWidth > 768) {
+            const cursor = document.getElementById('cursor');
+            const ring = document.getElementById('cursorRing');
+            
+            document.addEventListener('mousemove', (e) => {
+                gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
+                gsap.to(ring, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.2 });
             });
-            el.addEventListener('mouseleave', () => {
-                gsap.to(ring, { scale: 1, borderColor: 'rgba(255,255,255,0.2)', duration: 0.3 });
-                gsap.to(cursor, { scale: 1, duration: 0.3 });
-            });
-        });
 
-        // WhatsApp Form Handler
-        function initWhatsAppForm() {
-            const form = document.getElementById('whatsappForm');
-            if (form) {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    
-                    const brand = document.getElementById('brand_name').value;
-                    const name = document.getElementById('user_name').value;
-                    const email = document.getElementById('user_email').value;
-                    const link = document.getElementById('user_link').value;
-                    const phone = document.getElementById('user_phone').value;
-                    const collab = document.getElementById('user_collab').value;
-                    
-                    const whatsappNumber = "917448200042"; 
-                    const message = `Hey Krishna,%0A%0A` +
-                                    `Hope you’re doing well.%0A%0A` +
-                                    `We’re ${encodeURIComponent(brand)}, and we’ve been following your work.%0A` +
-                                    `We’d love to explore a collaboration with you—details are shared below:%0A%0A` +
-                                    `• Email: ${encodeURIComponent(email)}%0A` +
-                                    `• Link: ${encodeURIComponent(link)}%0A` +
-                                    `• Phone: ${encodeURIComponent(phone)}%0A` +
-                                    `• Inquiry: ${encodeURIComponent(collab)}%0A%0A` +
-                                    `Would love to hear your thoughts whenever you get a chance.%0A%0A` +
-                                    `Warm regards,%0A` +
-                                    `${encodeURIComponent(name)}%0A` +
-                                    `${encodeURIComponent(brand)}`;
-                    
-                    window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+            // Cursor Hover Reactions
+            document.querySelectorAll('a, button, .group, .collab-card, .bento-card').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    gsap.to(ring, { scale: 1.5, borderColor: '#00e5ff', duration: 0.3 });
+                    gsap.to(cursor, { scale: 0, duration: 0.3 });
                 });
-            }
+                el.addEventListener('mouseleave', () => {
+                    gsap.to(ring, { scale: 1, borderColor: 'rgba(255,255,255,0.2)', duration: 0.3 });
+                    gsap.to(cursor, { scale: 1, duration: 0.3 });
+                });
+            });
         }
 
+        // --- WHATSAPP ENQUIRY SYSTEM ---
+        document.getElementById('whatsappForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const brand = document.getElementById('brand_name').value;
+            const name = document.getElementById('user_name').value;
+            const email = document.getElementById('user_email').value;
+            const collab = document.getElementById('user_collab').value;
+            
+            const msg = `Hey Krishna,%0A%0A` +
+                        `Hope you're doing well.%0A%0A` +
+                        `We're ${encodeURIComponent(brand)}, and we'd love to explore a collaboration with you.%0A%0A` +
+                        `Name: ${encodeURIComponent(name)}%0A` +
+                        `Email: ${encodeURIComponent(email)}%0A` +
+                        `Inquiry: ${encodeURIComponent(collab)}%0A%0A` +
+                        `Best regards,%0A${encodeURIComponent(name)}`;
+            
+            window.open(`https://wa.me/917448200042?text=${msg}`, '_blank');
+        });
+
+        /* * APP INITIALIZATION 
+         * Starting the core engines once the DOM is ready.
+         */
         window.onload = () => {
             initThree();
             initGSAP();
-            initWhatsAppForm();
-            setAppHeight();
         };
 
+        // Responsiveness adjustment on window resize
         window.addEventListener('resize', () => {
             if(camera && renderer) {
                 camera.aspect = window.innerWidth / window.innerHeight;
