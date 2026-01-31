@@ -2,15 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Krishna Rathi | Creative Brand Strategist</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Using the non-minified version of Lenis to avoid variable naming conflicts (like 'x') in restricted environments -->
-    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -22,27 +20,6 @@
             --app-height: 100%;
         }
 
-        /* Lenis Recommended CSS */
-        html.lenis, html.lenis body {
-            height: auto;
-        }
-
-        .lenis.lenis-smooth {
-            scroll-behavior: auto !important;
-        }
-
-        .lenis.lenis-smooth [data-lenis-prevent] {
-            overscroll-behavior: contain;
-        }
-
-        .lenis.lenis-stopped {
-            overflow: hidden;
-        }
-
-        .lenis.lenis-scrolling iframe {
-            pointer-events: none;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -51,10 +28,10 @@
             /* Force hardware acceleration on Webkit */
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            -webkit-tap-highlight-color: transparent;
         }
 
         html, body {
+            height: -webkit-fill-available;
             width: 100%;
             overscroll-behavior-y: none;
         }
@@ -87,7 +64,6 @@
             opacity: 0.6;
             /* Webkit performance fix */
             transform: translateZ(0);
-            will-change: transform;
         }
 
         /* Welcome Page Styles - Zoomed Out Aesthetic */
@@ -136,7 +112,6 @@
             z-index: 1;
             pointer-events: none;
             transform: scale(1.05) translateZ(0);
-            will-change: transform;
         }
 
         .main-wrapper {
@@ -145,7 +120,6 @@
             width: 100%;
             /* Smoother scroll on iOS */
             transform-style: preserve-3d;
-            will-change: transform;
         }
 
         .stage {
@@ -206,7 +180,6 @@
             border-radius: 4px;
             background: #1a1a1a;
             transform: translateZ(0);
-            will-change: transform;
         }
 
         .reveal-img {
@@ -216,7 +189,6 @@
             transform: scale(1.1) translateZ(0);
             filter: grayscale(100%);
             transition: filter 0.8s ease;
-            will-change: filter, transform;
         }
 
         .stage:hover .reveal-img {
@@ -243,19 +215,12 @@
             left: 0;
             width: 100%;
             padding: 1.25rem 1rem;
-            padding-top: calc(1.25rem + env(safe-area-inset-top)); /* Handle iPhone notches */
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 1000; /* Ensure it stays above everything */
+            z-index: 100;
             mix-blend-mode: difference;
-            -webkit-transform: translate3d(0,0,0); /* Force GPU context */
-            transform: translate3d(0,0,0);
-            pointer-events: none; /* Let background interaction pass through */
-        }
-
-        .nav-fixed > * {
-            pointer-events: auto; /* Enable interaction for links and logo */
+            -webkit-backdrop-filter: blur(0px); /* Specific to Safari blend issues */
         }
 
         @media (min-width: 768px) {
@@ -268,18 +233,10 @@
 
         .magnetic-link {
             display: inline-block;
-            padding: 8px 4px;
+            padding: 8px;
             font-size: 0.65rem;
             text-transform: uppercase;
-            letter-spacing: 0.15em; /* Slightly tighter for mobile fits */
-            white-space: nowrap;
-        }
-
-        @media (max-width: 380px) {
-            .magnetic-link {
-                font-size: 0.6rem;
-                letter-spacing: 0.1em;
-            }
+            letter-spacing: 0.2em;
         }
 
         /* Scroll Progress Vertical Bar */
@@ -314,7 +271,6 @@
             overflow: hidden;
             z-index: 1;
             transform: translateZ(0);
-            will-change: transform;
         }
 
         .collab-card::before {
@@ -322,7 +278,8 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 100px; height: 100px;
+            width: 100px;
+            height: 100px;
             background: var(--accent);
             border-radius: 50%;
             filter: blur(80px);
@@ -418,10 +375,8 @@
             overflow: hidden;
             transition: background 0.3s ease, border-color 0.3s ease;
             opacity: 0;
-            visibility: hidden; /* Prevent flickering before GSAP takes over */
-            transform: translateY(40px) translateZ(0);
+            transform: translateY(30px) translateZ(0);
             z-index: 2;
-            will-change: transform, opacity;
         }
 
         .bento-card:hover {
@@ -494,7 +449,6 @@
             pointer-events: none;
             z-index: 1;
             transform: translateZ(0);
-            will-change: transform;
         }
         
         @media (max-width: 768px) {
@@ -568,12 +522,12 @@
 
     <nav class="nav-fixed">
         <div class="font-display text-lg md:text-xl tracking-tighter">KR.</div>
-        <div class="flex items-center gap-2 md:gap-8">
+        <div class="flex items-center gap-3 md:gap-8">
             <a href="#work" class="magnetic-link">Work</a>
             <a href="#value-add" class="magnetic-link">Why Krishna</a>
             <a href="#contact" class="magnetic-link">Collaborate</a>
             
-            <a href="https://www.instagram.com/rathikrishna42/" target="_blank" class="group cursor-pointer ml-1 p-2">
+            <a href="https://www.instagram.com/rathikrishna42/" target="_blank" class="group cursor-pointer ml-1">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:text-cyan-400 transition-colors">
                     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
@@ -785,6 +739,7 @@
                     </div>
 
                     <div class="bento-card col-span-12 lg:col-span-7 floating-element" style="animation-delay: 3.5s">
+                        <span class="val-num">08 / USP: PSYCH-LEAD</span>
                         <h4>Psychology-Led Storytelling</h4>
                         <p>A clean, communication style rooted in behavioural psychology — optimised for comprehension and trust.</p>
                     </div>
@@ -1055,40 +1010,8 @@
         window.addEventListener('resize', setAppHeight);
         setAppHeight();
 
-        // --- LENIS: SMOOTH SCROLL INITIALIZATION ---
-        let lenis;
-        function initSmoothScroll() {
-            // Check if Lenis is defined from CDN
-            if (typeof Lenis !== 'undefined') {
-                lenis = new Lenis({
-                    duration: 1.2,
-                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                    smoothWheel: true,
-                    smoothTouch: true,
-                    touchMultiplier: 1.5,
-                    infinite: false,
-                });
-
-                function raf(time) {
-                    lenis.raf(time);
-                    requestAnimationFrame(raf);
-                }
-                requestAnimationFrame(raf);
-
-                // Connect Lenis to ScrollTrigger
-                lenis.on('scroll', ScrollTrigger.update);
-                gsap.ticker.add((time) => {
-                    lenis.raf(time * 1000);
-                });
-                gsap.ticker.lagSmoothing(0);
-
-                // Start in stopped state for Welcome Page
-                lenis.stop();
-            }
-        }
-
         // --- THREE.JS: LIQUID MESH BACKGROUND ---
-        let scene, camera, renderer, mesh, clock;
+        let scene, camera, renderer, mesh;
         function initThree() {
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -1097,8 +1020,7 @@
             renderer = new THREE.WebGLRenderer({ 
                 antialias: true, 
                 alpha: true,
-                powerPreference: "high-performance",
-                precision: "highp"
+                powerPreference: "high-performance" // Specific hint for Safari/Mobile
             });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -1113,27 +1035,22 @@
             });
             mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
-            
-            clock = new THREE.Clock();
 
             animate();
         }
 
         function animate() {
             requestAnimationFrame(animate);
-            if (!clock) return;
-            const delta = clock.getElapsedTime();
-            const time = delta * 0.5;
+            const time = performance.now() * 0.0002;
             const pos = mesh.geometry.attributes.position;
-            
             for(let i=0; i<pos.count; i++) {
-                const vx = pos.getX(i);
-                const vy = pos.getY(i);
-                const vz = Math.sin(vx * 2 + time) * 0.2 + Math.cos(vy * 2 + time) * 0.2;
-                pos.setZ(i, vz);
+                const x = pos.getX(i);
+                const y = pos.getY(i);
+                const z = Math.sin(x * 2 + time) * 0.2 + Math.cos(y * 2 + time) * 0.2;
+                pos.setZ(i, z);
             }
             pos.needsUpdate = true;
-            mesh.rotation.z = time * 0.05;
+            mesh.rotation.z = time * 0.1;
             renderer.render(scene, camera);
         }
 
@@ -1141,33 +1058,29 @@
         gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 
         function initGSAP() {
-            gsap.config({ 
-                force3D: true,
-                autoSleep: 60 
-            });
-
+            // Welcome Page Animation Timeline
             const welcomeTl = gsap.timeline();
-            welcomeTl.to("#welcomeTop", { opacity: 1, y: 0, duration: 1, delay: 0.5, ease: "power2.out" })
-                     .to("#welcomeTitle", { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, "-=0.5")
+            welcomeTl.to("#welcomeTop", { opacity: 1, y: 0, duration: 1, delay: 0.5 })
+                     .to("#welcomeTitle", { opacity: 1, y: 0, duration: 1 }, "-=0.5")
                      .to(".welcome-line-inner", { 
                         opacity: 1, 
                         y: 0, 
-                        stagger: 0.1, 
-                        duration: 1,
+                        stagger: 0.2, 
+                        duration: 1.2,
                         ease: "power3.out"
                      }, "-=0.5")
-                     .to("#enterBtn", { opacity: 1, y: 0, duration: 1, ease: "back.out(1.7)" }, "-=0.4")
-                     .to("#welcomeRegards", { opacity: 0.4, y: 0, duration: 1, ease: "power2.out" }, "-=0.5");
+                     .to("#enterBtn", { opacity: 1, y: 0, duration: 1 }, "-=0.4")
+                     .to("#welcomeRegards", { opacity: 0.4, y: 0, duration: 1 }, "-=0.5");
 
+            // WELCOME PARALLAX
             document.getElementById('welcome-page').addEventListener('mousemove', (e) => {
-                const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
-                const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+                const moveX = (e.clientX - window.innerWidth / 2) * 0.015;
+                const moveY = (e.clientY - window.innerHeight / 2) * 0.015;
                 gsap.to('.welcome-bg-img', { 
                     x: moveX, 
                     y: moveY, 
-                    duration: 2,
-                    ease: "power2.out",
-                    overwrite: "auto"
+                    duration: 1.5,
+                    ease: "power2.out"
                 });
             });
 
@@ -1175,13 +1088,11 @@
                 gsap.to("#welcome-page", { 
                     opacity: 0, 
                     pointerEvents: "none", 
-                    duration: 1.2, 
+                    duration: 1.5, 
                     ease: "expo.inOut",
                     onComplete: () => {
                         document.getElementById('welcome-page').style.display = 'none';
                         document.body.style.overflow = 'auto';
-                        // Enable smooth scroll on entry
-                        if(lenis) lenis.start();
                         ScrollTrigger.refresh();
                     }
                 });
@@ -1189,10 +1100,10 @@
                 gsap.to(".split-inner", {
                     y: 0,
                     rotate: 0,
-                    duration: 1.5,
-                    stagger: 0.1,
+                    duration: 1.8,
+                    stagger: 0.15,
                     ease: "expo.out",
-                    delay: 0.4
+                    delay: 0.5
                 });
             });
 
@@ -1203,23 +1114,24 @@
                     trigger: ".main-wrapper",
                     start: "top top",
                     end: "bottom bottom",
-                    scrub: 0.1
+                    scrub: 0.5
                 }
             });
 
             gsap.utils.toArray('.parallax-img').forEach(img => {
                 gsap.to(img, {
-                    y: "-12%",
+                    y: "-10%",
                     ease: "none",
                     scrollTrigger: {
                         trigger: img.parentElement,
                         start: "top bottom",
                         end: "bottom top",
-                        scrub: 0.1
+                        scrub: true
                     }
                 });
             });
 
+            // Mobile Centered Glow for Collaboration Cards
             if (window.innerWidth <= 768) {
                 gsap.utils.toArray('.collab-card').forEach(card => {
                     ScrollTrigger.create({
@@ -1242,17 +1154,18 @@
                 gsap.from(stage.children, {
                     scrollTrigger: {
                         trigger: stage,
-                        start: "top 90%",
+                        start: "top 85%",
                         toggleActions: "play none none reverse"
                     },
-                    y: 30,
+                    y: 40,
                     opacity: 0,
-                    duration: 1,
+                    duration: 1.2,
                     ease: "power3.out",
-                    stagger: 0.05
+                    stagger: 0.1
                 });
             });
 
+            // Theme Transition 1: White background sections
             gsap.to("body", {
                 backgroundColor: "#ffffff",
                 color: "#000000",
@@ -1260,31 +1173,22 @@
                     trigger: "#philosophy",
                     start: "top center",
                     end: "bottom center",
-                    scrub: 0.2
+                    scrub: true
                 }
             });
 
-            // FIXED: "Why Brands work with Krishna" reveal and theme swap
+            // Theme Transition 2: Bento / Value Section (Back to Dark)
             ScrollTrigger.create({
                 trigger: "#value-add",
-                start: "top 70%", 
+                start: "top center",
                 onEnter: () => {
-                    gsap.to("body", { backgroundColor: "#0a0a0a", color: "#f5f5f7", duration: 0.8, ease: "power2.inOut" });
-                    // Explicitly reveal bento cards
-                    gsap.to(".bento-card", { 
-                        autoAlpha: 1, 
-                        y: 0, 
-                        stagger: 0.1, 
-                        duration: 1, 
-                        ease: "power4.out",
-                        overwrite: true 
-                    });
+                    gsap.to("body", { backgroundColor: "#0a0a0a", color: "#f5f5f7", duration: 0.4 });
+                    gsap.to(".bento-card", { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: "power4.out" });
                 },
-                onLeaveBack: () => {
-                    gsap.to("body", { backgroundColor: "#ffffff", color: "#000000", duration: 0.8, ease: "power2.inOut" });
-                }
+                onLeaveBack: () => {}
             });
 
+            // Theme Transition 3: Collaboration (Ensure visibility)
             gsap.to("body", {
                 backgroundColor: "#ffffff",
                 color: "#000000",
@@ -1292,41 +1196,42 @@
                     trigger: "#collab",
                     start: "top center",
                     end: "bottom center",
-                    scrub: 0.2
+                    scrub: true
                 }
             });
 
+            // Bento Grid Entrance Animation
             gsap.from("#valTitle, #valSub", {
                 scrollTrigger: {
                     trigger: "#value-add",
-                    start: "top 85%",
+                    start: "top 75%",
                 },
-                y: 30,
+                y: 50,
                 opacity: 0,
                 duration: 1.2,
-                stagger: 0.15,
+                stagger: 0.2,
                 ease: "power4.out"
             });
 
+            // Subtle Parallax for the Background Image in Value Section
             gsap.to(".parallax-bg-img", {
-                y: "15%",
+                y: "20%",
                 ease: "none",
                 scrollTrigger: {
                     trigger: "#value-add",
                     start: "top bottom",
                     end: "bottom top",
-                    scrub: 0.1
+                    scrub: true
                 }
             });
 
             gsap.from(".animate-draw", {
                 strokeDasharray: 1000,
                 strokeDashoffset: 1000,
-                duration: 2.5,
-                ease: "power2.inOut",
+                duration: 3,
                 scrollTrigger: {
                     trigger: "#analytics",
-                    start: "top 75%"
+                    start: "top 70%"
                 }
             });
 
@@ -1335,32 +1240,20 @@
                     const targetId = anchor.getAttribute('href');
                     if (targetId === "#") return;
                     e.preventDefault();
-                    // Use Lenis for smooth anchoring
-                    if(lenis) {
-                        lenis.scrollTo(targetId, {
-                            duration: 1.5,
-                            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
-                        });
-                    } else {
-                        gsap.to(window, {
-                            duration: 1,
-                            scrollTo: { y: targetId, autoKill: false },
-                            ease: "expo.inOut"
-                        });
-                    }
+                    gsap.to(window, {
+                        duration: 1.2,
+                        scrollTo: { y: targetId, autoKill: false },
+                        ease: "power4.inOut"
+                    });
                 });
             });
 
             document.getElementById('scrollEnterBtn').addEventListener('click', () => {
-                if(lenis) {
-                    lenis.scrollTo("#work", { duration: 1.5 });
-                } else {
-                    gsap.to(window, {
-                        duration: 1,
-                        scrollTo: { y: "#work", autoKill: false },
-                        ease: "expo.inOut"
-                    });
-                }
+                gsap.to(window, {
+                    duration: 1.2,
+                    scrollTo: { y: "#work", autoKill: false },
+                    ease: "power4.inOut"
+                });
             });
         }
 
@@ -1369,20 +1262,21 @@
 
         document.addEventListener('mousemove', (e) => {
             gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
-            gsap.to(ring, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.15, ease: "power1.out" });
-        }, { passive: true });
+            gsap.to(ring, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.25 });
+        });
 
         document.querySelectorAll('a, button, .group, .collab-card, .bento-card, input, textarea, label').forEach(el => {
             el.addEventListener('mouseenter', () => {
-                gsap.to(ring, { scale: 1.4, borderColor: '#00e5ff', duration: 0.2, ease: "power2.out" });
-                gsap.to(cursor, { scale: 0, duration: 0.2, ease: "power2.out" });
+                gsap.to(ring, { scale: 1.5, borderColor: '#00e5ff', duration: 0.3 });
+                gsap.to(cursor, { scale: 0, duration: 0.3 });
             });
             el.addEventListener('mouseleave', () => {
-                gsap.to(ring, { scale: 1, borderColor: 'rgba(255,255,255,0.2)', duration: 0.2, ease: "power2.out" });
-                gsap.to(cursor, { scale: 1, duration: 0.2, ease: "power2.out" });
+                gsap.to(ring, { scale: 1, borderColor: 'rgba(255,255,255,0.2)', duration: 0.3 });
+                gsap.to(cursor, { scale: 1, duration: 0.3 });
             });
         });
 
+        // WhatsApp Form Handler
         function initWhatsAppForm() {
             const form = document.getElementById('whatsappForm');
             if (form) {
@@ -1418,7 +1312,6 @@
         window.onload = () => {
             initThree();
             initGSAP();
-            initSmoothScroll();
             initWhatsAppForm();
             setAppHeight();
         };
@@ -1428,10 +1321,9 @@
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             }
             setAppHeight();
-        }, { passive: true });
+        });
     </script>
 </body>
 </html>
