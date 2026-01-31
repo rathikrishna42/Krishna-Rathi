@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Krishna Rathi | Creative Brand Strategist</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -16,6 +16,8 @@
             --accent: #00e5ff;
             --text-main: #f5f5f7;
             --text-dim: #a1a1a6;
+            /* Fix for Mobile Safari height shifts */
+            --app-height: 100%;
         }
 
         * {
@@ -23,6 +25,15 @@
             padding: 0;
             box-sizing: border-box;
             cursor: none;
+            /* Force hardware acceleration on Webkit */
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        html, body {
+            height: -webkit-fill-available;
+            width: 100%;
+            overscroll-behavior-y: none;
         }
 
         body {
@@ -31,6 +42,7 @@
             color: var(--text-main);
             overflow: hidden; /* Locked initially for welcome page */
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         h1, h2, h3, h4, h5, .font-display {
@@ -46,9 +58,12 @@
             left: 0;
             width: 100%;
             height: 100vh;
+            height: calc(var(--app-height, 1vh) * 100);
             z-index: 1;
             pointer-events: none;
             opacity: 0.6;
+            /* Webkit performance fix */
+            transform: translateZ(0);
         }
 
         /* Welcome Page Styles - Zoomed Out Aesthetic */
@@ -58,18 +73,19 @@
             left: 0;
             width: 100%;
             height: 100vh;
+            height: calc(var(--app-height, 1vh) * 100);
             background: #000;
             z-index: 2000;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 4rem 2rem; /* Increased padding */
+            padding: 4rem 2rem;
             overflow: hidden;
         }
 
         .welcome-content {
             width: 100%;
-            max-width: 750px; /* Reduced width to "zoom out" content */
+            max-width: 750px;
             text-align: center;
             position: relative;
             z-index: 10;
@@ -77,7 +93,8 @@
             overflow-y: auto;
             scrollbar-width: none;
             -ms-overflow-style: none;
-            transform: scale(0.95); /* Subtle scale-down for cleaner look */
+            transform: scale(0.95);
+            -webkit-overflow-scrolling: touch;
         }
 
         .welcome-content::-webkit-scrollbar { display: none; }
@@ -89,26 +106,31 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: 50% 15%; /* Higher framing for Subject focus */
+            object-position: 50% 15%;
             filter: grayscale(100%) brightness(0.22);
             opacity: 0.9;
             z-index: 1;
             pointer-events: none;
-            transform: scale(1.05); /* Slight zoom-out feel compared to 1.1 */
+            transform: scale(1.05) translateZ(0);
         }
 
         .main-wrapper {
             position: relative;
             z-index: 10;
+            width: 100%;
+            /* Smoother scroll on iOS */
+            transform-style: preserve-3d;
         }
 
         .stage {
             min-height: 100vh;
+            min-height: calc(var(--app-height, 1vh) * 100);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 12vh 6vw 8vh 6vw;
             position: relative;
+            will-change: transform, opacity;
         }
 
         /* Spacing Reduction for Mobile */
@@ -119,7 +141,7 @@
                 padding-bottom: 3rem !important;
             }
             .welcome-content {
-                transform: scale(1); /* Keep mobile tight and perfect */
+                transform: scale(1);
             }
         }
 
@@ -157,13 +179,14 @@
             overflow: hidden;
             border-radius: 4px;
             background: #1a1a1a;
+            transform: translateZ(0);
         }
 
         .reveal-img {
             width: 100%;
             height: 110%;
             object-fit: cover;
-            transform: scale(1.1);
+            transform: scale(1.1) translateZ(0);
             filter: grayscale(100%);
             transition: filter 0.8s ease;
         }
@@ -182,6 +205,7 @@
             display: inline-block;
             transform: translateY(110%) rotate(5deg);
             transform-origin: left;
+            will-change: transform;
         }
 
         /* Custom Navigation */
@@ -190,12 +214,13 @@
             top: 0;
             left: 0;
             width: 100%;
-            padding: 1.25rem 1rem; /* Tightened mobile padding for Chrome optimization */
+            padding: 1.25rem 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
             mix-blend-mode: difference;
+            -webkit-backdrop-filter: blur(0px); /* Specific to Safari blend issues */
         }
 
         @media (min-width: 768px) {
@@ -245,6 +270,7 @@
             position: relative;
             overflow: hidden;
             z-index: 1;
+            transform: translateZ(0);
         }
 
         .collab-card::before {
@@ -264,7 +290,6 @@
             pointer-events: none;
         }
 
-        /* Enhanced Centered Glow for Mobile */
         @media (max-width: 768px) {
             .collab-card.active-mobile-glow {
                 background: rgba(255, 255, 255, 0.06);
@@ -298,7 +323,6 @@
             z-index: -1;
         }
 
-        /* Number visibility fix for mobile */
         @media (max-width: 768px) {
             .collab-number {
                 right: 5px !important;
@@ -314,14 +338,6 @@
             color: var(--accent);
         }
 
-        @media (max-width: 768px) {
-            .collab-card.active-mobile-glow .collab-number {
-                opacity: 0.08;
-                color: var(--accent);
-                transform: scale(1.05);
-            }
-        }
-
         /* Analytics Chart Aesthetic */
         .chart-glow {
             filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.3));
@@ -329,6 +345,7 @@
 
         .levitate {
             animation: float 4s ease-in-out infinite;
+            will-change: transform;
         }
 
         @keyframes float {
@@ -358,7 +375,7 @@
             overflow: hidden;
             transition: background 0.3s ease, border-color 0.3s ease;
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(30px) translateZ(0);
             z-index: 2;
         }
 
@@ -384,7 +401,7 @@
             line-height: 1.1;
             text-transform: uppercase;
             margin-bottom: 1rem;
-            color: #fff !important; /* Ensure always white */
+            color: #fff !important;
             letter-spacing: -0.02em;
         }
 
@@ -410,12 +427,13 @@
 
         /* Continuous Floating Keyframes */
         @keyframes float3d {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+            0%, 100% { transform: translateY(0px) rotateX(0deg); }
+            50% { transform: translateY(-10px) rotateX(2deg); }
         }
 
         .floating-element {
             animation: float3d 6s ease-in-out infinite;
+            will-change: transform;
         }
 
         /* Background Image Specific Styling */
@@ -427,12 +445,12 @@
             height: 100%;
             object-fit: cover;
             filter: grayscale(100%);
-            opacity: 0.25; /* More visible as requested */
+            opacity: 0.25;
             pointer-events: none;
             z-index: 1;
+            transform: translateZ(0);
         }
         
-        /* Reduced size & enhanced visibility for Value Add background on mobile */
         @media (max-width: 768px) {
             #value-add .section-bg-image {
                 opacity: 0.45;
@@ -454,15 +472,16 @@
             display: block;
             opacity: 0;
             transform: translateY(30px);
+            will-change: transform, opacity;
         }
         
         #welcomeTitle {
-            font-weight: 300; /* Lighter heading as requested */
+            font-weight: 300;
             letter-spacing: -0.02em;
         }
 
         .welcome-para {
-            margin-bottom: 1rem; /* Spacing between lines */
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -503,7 +522,6 @@
 
     <nav class="nav-fixed">
         <div class="font-display text-lg md:text-xl tracking-tighter">KR.</div>
-        <!-- Optimized flex container for mobile horizontal width -->
         <div class="flex items-center gap-3 md:gap-8">
             <a href="#work" class="magnetic-link">Work</a>
             <a href="#value-add" class="magnetic-link">Why Krishna</a>
@@ -634,7 +652,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Premium Multi-layered Screenshot Layout -->
                 <div class="relative group mx-auto lg:ml-auto">
                     <div class="absolute -inset-10 bg-cyan-500/10 blur-[100px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
                     <div class="absolute -left-12 top-1/4 p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl z-20 hidden xl:block translate-x-4 group-hover:translate-x-0 transition-transform duration-700 pointer-events-none">
@@ -663,11 +680,9 @@
 
         <!-- STAGE 3.75: WHAT KRISHNA BRINGS TO THE TABLE -->
         <section class="stage relative overflow-hidden bg-[#0a0a0a] text-white" id="value-add">
-            <!-- Background Image -->
             <img src="https://res.cloudinary.com/dj159rgsr/image/upload/v1769759174/ChatGPT_Image_Jan_30_2026_01_15_54_PM_sxd8as.png" 
                  class="section-bg-image parallax-bg-img" alt="Background Texture">
 
-            <!-- Background Glow and Visual Elements -->
             <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 120px 120px;"></div>
             <div class="absolute top-1/4 -right-10 w-96 h-96 bg-cyan-500/5 blur-[150px] rounded-full"></div>
 
@@ -681,63 +696,54 @@
                 </div>
 
                 <div class="bento-grid" id="valGrid">
-                    <!-- 01: Audience Intelligence -->
                     <div class="bento-card col-span-12 lg:col-span-8 floating-element" style="animation-delay: 0s">
                         <span class="val-num">01 / BEHAVIORAL INTEL</span>
                         <h4>Audience Intelligence, Not Guesswork</h4>
                         <p>A deep, behaviour-level understanding of what audiences care about, engage with, and save — not just what they like or view.</p>
                     </div>
 
-                    <!-- 02: Engagement -->
                     <div class="bento-card col-span-12 lg:col-span-4 lg:row-span-2 floating-element" style="animation-delay: 0.5s">
                         <span class="val-num">02 / SIGNAL</span>
                         <h4>Engagement That Signals Real Interest</h4>
                         <p>Consistently delivering engagement rates significantly above industry benchmarks — driven by relevance, not volume.</p>
                     </div>
 
-                    <!-- 03: Organic Case Studies -->
                     <div class="bento-card col-span-12 lg:col-span-4 floating-element" style="animation-delay: 1s">
                         <span class="val-num">03 / NATIVE</span>
                         <h4>Organic Case Studies</h4>
                         <p>Brand integrations built around real use-cases and contextual storytelling, resulting in content that feels native.</p>
                     </div>
 
-                    <!-- 04: Discoverability -->
                     <div class="bento-card col-span-12 lg:col-span-4 floating-element" style="animation-delay: 1s">
                         <span class="val-num">04 / SEO</span>
                         <h4>Built for Discoverability</h4>
                         <p>Every collaboration is structured to remain searchable and valuable over time through SEO-optimised narratives.</p>
                     </div>
 
-                    <!-- 05: Brand Introductions -->
                     <div class="bento-card col-span-12 lg:col-span-5 floating-element" style="animation-delay: 2s">
                         <span class="val-num">05 / PURPOSE</span>
                         <h4>Introductions with Clarity</h4>
                         <p>Brands are introduced with intent — helping audiences understand why a brand exists before asking them to notice it.</p>
                     </div>
 
-                    <!-- 06: Whitelisting -->
                     <div class="bento-card col-span-12 lg:col-span-3 floating-element" style="animation-delay: 2.5s">
                         <span class="val-num">06 / AMPLIFIED</span>
                         <h4>Selective Whitelisting</h4>
                         <p>Selective rights that allow brands to amplify high-performing content with narrative control.</p>
                     </div>
 
-                    <!-- 07: Intent Signals -->
                     <div class="bento-card col-span-12 lg:col-span-4 floating-element" style="animation-delay: 3s">
                         <span class="val-num">07 / RETENTION</span>
                         <h4>High Save-to-Reach Signals</h4>
                         <p>Content designed to be revisited — reflected in consistently strong save-to-reach ratios.</p>
                     </div>
 
-                    <!-- 08: Minimalist Psychology -->
                     <div class="bento-card col-span-12 lg:col-span-7 floating-element" style="animation-delay: 3.5s">
                         <span class="val-num">08 / USP: PSYCH-LEAD</span>
                         <h4>Psychology-Led Storytelling</h4>
                         <p>A clean, communication style rooted in behavioural psychology — optimised for comprehension and trust.</p>
                     </div>
 
-                    <!-- 09: Compounding Assets -->
                     <div class="bento-card col-span-12 lg:col-span-5 floating-element" style="animation-delay: 4s">
                         <span class="val-num">09 / COMPOUNDING</span>
                         <h4>Assets, Not Moments</h4>
@@ -790,6 +796,7 @@
                                 <path d="M0,180 L150,170 L300,175 L450,150 L600,60 L750,130 L900,160 L1000,155 V200 H0 Z" 
                                       fill="url(#grad)" />
                                 <circle cx="600" cy="60" r="6" fill="var(--accent)" />
+                                <circle cx="600" cy="60" r="10" fill="transparent" stroke="var(--accent)" stroke-width="1" class="animate-pulse" />
                                 <text x="615" y="50" fill="white" font-size="14" font-family="Bricolage Grotesque" font-weight="bold">Highest Impact</text>
                             </svg>
                         </div>
@@ -877,7 +884,6 @@
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 w-full max-w-7xl">
-                <!-- 01 Strategic Visibility -->
                 <div class="collab-card p-8 md:p-12 rounded-[2rem] md:rounded-[2.5rem] group cursor-pointer levitate">
                     <div class="relative z-10 h-full flex flex-col">
                         <h5 class="text-2xl md:text-3xl mb-6 uppercase tracking-tight">Strategic Brand Visibility</h5>
@@ -885,7 +891,6 @@
                     <div class="collab-number">01</div>
                 </div>
 
-                <!-- 02 Build + Amplify -->
                 <div class="collab-card p-8 md:p-12 rounded-[2rem] md:rounded-[2.5rem] group cursor-pointer bg-white/[0.04] levitate" style="animation-delay: 0.2s">
                     <div class="relative z-10 h-full flex flex-col">
                         <h5 class="text-2xl md:text-3xl mb-6 uppercase tracking-tight">Build + Amplify</h5>
@@ -893,7 +898,6 @@
                     <div class="collab-number">02</div>
                 </div>
 
-                <!-- 03 Long-Term Brand Partner -->
                 <div class="collab-card p-8 md:p-12 rounded-[2rem] md:rounded-[2.5rem] group cursor-pointer levitate" style="animation-delay: 0.4s">
                     <div class="relative z-10 h-full flex flex-col">
                         <h5 class="text-2xl md:text-3xl mb-6 uppercase tracking-tight">Long-Term Brand Partner</h5>
@@ -974,7 +978,6 @@
             </div>
         </section>
 
-        <!-- FOLLOW CALL TO ACTION -->
         <div class="w-full flex justify-center pb-20 px-6">
              <a href="https://www.instagram.com/rathikrishna42/" target="_blank" class="group flex items-center gap-4 px-8 py-4 border border-white/10 rounded-full hover:border-cyan-400 transition-all duration-500 levitate text-center">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:text-cyan-400 transition-colors">
@@ -999,6 +1002,14 @@
     </main>
 
     <script>
+        // --- Safari Viewport Fix ---
+        const setAppHeight = () => {
+            const doc = document.documentElement;
+            doc.style.setProperty('--app-height', `${window.innerHeight / 100}px`);
+        };
+        window.addEventListener('resize', setAppHeight);
+        setAppHeight();
+
         // --- THREE.JS: LIQUID MESH BACKGROUND ---
         let scene, camera, renderer, mesh;
         function initThree() {
@@ -1006,7 +1017,11 @@
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.z = 2;
 
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer = new THREE.WebGLRenderer({ 
+                antialias: true, 
+                alpha: true,
+                powerPreference: "high-performance" // Specific hint for Safari/Mobile
+            });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             document.getElementById('canvas-container').appendChild(renderer.domElement);
@@ -1168,12 +1183,9 @@
                 start: "top center",
                 onEnter: () => {
                     gsap.to("body", { backgroundColor: "#0a0a0a", color: "#f5f5f7", duration: 0.4 });
-                    // Explicitly reveal bento cards
                     gsap.to(".bento-card", { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: "power4.out" });
                 },
-                onLeaveBack: () => {
-                    // Logic for switching back depends on where user scrolls
-                }
+                onLeaveBack: () => {}
             });
 
             // Theme Transition 3: Collaboration (Ensure visibility)
@@ -1278,7 +1290,7 @@
                     const phone = document.getElementById('user_phone').value;
                     const collab = document.getElementById('user_collab').value;
                     
-                    const whatsappNumber = "917448200042"; // With country code
+                    const whatsappNumber = "917448200042"; 
                     const message = `Hey Krishna,%0A%0A` +
                                     `Hope you’re doing well.%0A%0A` +
                                     `We’re ${encodeURIComponent(brand)}, and we’ve been following your work.%0A` +
@@ -1301,6 +1313,7 @@
             initThree();
             initGSAP();
             initWhatsAppForm();
+            setAppHeight();
         };
 
         window.addEventListener('resize', () => {
@@ -1309,6 +1322,7 @@
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
             }
+            setAppHeight();
         });
     </script>
 </body>
