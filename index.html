@@ -65,6 +65,7 @@
             opacity: 0.6;
             /* Webkit performance fix */
             transform: translateZ(0);
+            will-change: transform;
         }
 
         /* Welcome Page Styles - Zoomed Out Aesthetic */
@@ -113,6 +114,7 @@
             z-index: 1;
             pointer-events: none;
             transform: scale(1.05) translateZ(0);
+            will-change: transform;
         }
 
         .main-wrapper {
@@ -121,6 +123,7 @@
             width: 100%;
             /* Smoother scroll on iOS */
             transform-style: preserve-3d;
+            will-change: transform;
         }
 
         .stage {
@@ -181,6 +184,7 @@
             border-radius: 4px;
             background: #1a1a1a;
             transform: translateZ(0);
+            will-change: transform;
         }
 
         .reveal-img {
@@ -190,6 +194,7 @@
             transform: scale(1.1) translateZ(0);
             filter: grayscale(100%);
             transition: filter 0.8s ease;
+            will-change: filter, transform;
         }
 
         .stage:hover .reveal-img {
@@ -287,6 +292,7 @@
             overflow: hidden;
             z-index: 1;
             transform: translateZ(0);
+            will-change: transform;
         }
 
         .collab-card::before {
@@ -393,6 +399,7 @@
             opacity: 0;
             transform: translateY(30px) translateZ(0);
             z-index: 2;
+            will-change: transform, opacity;
         }
 
         .bento-card:hover {
@@ -465,6 +472,7 @@
             pointer-events: none;
             z-index: 1;
             transform: translateZ(0);
+            will-change: transform;
         }
         
         @media (max-width: 768px) {
@@ -1027,7 +1035,7 @@
         setAppHeight();
 
         // --- THREE.JS: LIQUID MESH BACKGROUND ---
-        let scene, camera, renderer, mesh;
+        let scene, camera, renderer, mesh, clock;
         function initThree() {
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -1036,7 +1044,8 @@
             renderer = new THREE.WebGLRenderer({ 
                 antialias: true, 
                 alpha: true,
-                powerPreference: "high-performance" // Specific hint for Safari/Mobile
+                powerPreference: "high-performance",
+                precision: "highp"
             });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -1051,14 +1060,19 @@
             });
             mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
+            
+            clock = new THREE.Clock();
 
             animate();
         }
 
         function animate() {
             requestAnimationFrame(animate);
-            const time = performance.now() * 0.0002;
+            const delta = clock.getElapsedTime();
+            const time = delta * 0.5;
             const pos = mesh.geometry.attributes.position;
+            
+            // Optimized vertex loop
             for(let i=0; i<pos.count; i++) {
                 const x = pos.getX(i);
                 const y = pos.getY(i);
@@ -1066,7 +1080,7 @@
                 pos.setZ(i, z);
             }
             pos.needsUpdate = true;
-            mesh.rotation.z = time * 0.1;
+            mesh.rotation.z = time * 0.05;
             renderer.render(scene, camera);
         }
 
@@ -1074,29 +1088,36 @@
         gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 
         function initGSAP() {
+            // Global high-performance GSAP settings
+            gsap.config({ 
+                force3D: true,
+                autoSleep: 60 
+            });
+
             // Welcome Page Animation Timeline
             const welcomeTl = gsap.timeline();
-            welcomeTl.to("#welcomeTop", { opacity: 1, y: 0, duration: 1, delay: 0.5 })
-                     .to("#welcomeTitle", { opacity: 1, y: 0, duration: 1 }, "-=0.5")
+            welcomeTl.to("#welcomeTop", { opacity: 1, y: 0, duration: 1, delay: 0.5, ease: "power2.out" })
+                     .to("#welcomeTitle", { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, "-=0.5")
                      .to(".welcome-line-inner", { 
                         opacity: 1, 
                         y: 0, 
-                        stagger: 0.2, 
-                        duration: 1.2,
+                        stagger: 0.1, 
+                        duration: 1,
                         ease: "power3.out"
                      }, "-=0.5")
-                     .to("#enterBtn", { opacity: 1, y: 0, duration: 1 }, "-=0.4")
-                     .to("#welcomeRegards", { opacity: 0.4, y: 0, duration: 1 }, "-=0.5");
+                     .to("#enterBtn", { opacity: 1, y: 0, duration: 1, ease: "back.out(1.7)" }, "-=0.4")
+                     .to("#welcomeRegards", { opacity: 0.4, y: 0, duration: 1, ease: "power2.out" }, "-=0.5");
 
             // WELCOME PARALLAX
             document.getElementById('welcome-page').addEventListener('mousemove', (e) => {
-                const moveX = (e.clientX - window.innerWidth / 2) * 0.015;
-                const moveY = (e.clientY - window.innerHeight / 2) * 0.015;
+                const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+                const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
                 gsap.to('.welcome-bg-img', { 
                     x: moveX, 
                     y: moveY, 
-                    duration: 1.5,
-                    ease: "power2.out"
+                    duration: 2,
+                    ease: "power2.out",
+                    overwrite: "auto"
                 });
             });
 
@@ -1104,7 +1125,7 @@
                 gsap.to("#welcome-page", { 
                     opacity: 0, 
                     pointerEvents: "none", 
-                    duration: 1.5, 
+                    duration: 1.2, 
                     ease: "expo.inOut",
                     onComplete: () => {
                         document.getElementById('welcome-page').style.display = 'none';
@@ -1116,10 +1137,10 @@
                 gsap.to(".split-inner", {
                     y: 0,
                     rotate: 0,
-                    duration: 1.8,
-                    stagger: 0.15,
+                    duration: 1.5,
+                    stagger: 0.1,
                     ease: "expo.out",
-                    delay: 0.5
+                    delay: 0.4
                 });
             });
 
@@ -1130,19 +1151,19 @@
                     trigger: ".main-wrapper",
                     start: "top top",
                     end: "bottom bottom",
-                    scrub: 0.5
+                    scrub: 0.1 // Tightened for immediate response
                 }
             });
 
             gsap.utils.toArray('.parallax-img').forEach(img => {
                 gsap.to(img, {
-                    y: "-10%",
+                    y: "-12%",
                     ease: "none",
                     scrollTrigger: {
                         trigger: img.parentElement,
                         start: "top bottom",
                         end: "bottom top",
-                        scrub: true
+                        scrub: 0.1 // Tightened for 120Hz+ smoothness
                     }
                 });
             });
@@ -1170,14 +1191,14 @@
                 gsap.from(stage.children, {
                     scrollTrigger: {
                         trigger: stage,
-                        start: "top 85%",
+                        start: "top 90%",
                         toggleActions: "play none none reverse"
                     },
-                    y: 40,
+                    y: 30,
                     opacity: 0,
-                    duration: 1.2,
+                    duration: 1,
                     ease: "power3.out",
-                    stagger: 0.1
+                    stagger: 0.05
                 });
             });
 
@@ -1189,7 +1210,7 @@
                     trigger: "#philosophy",
                     start: "top center",
                     end: "bottom center",
-                    scrub: true
+                    scrub: 0.2
                 }
             });
 
@@ -1198,8 +1219,8 @@
                 trigger: "#value-add",
                 start: "top center",
                 onEnter: () => {
-                    gsap.to("body", { backgroundColor: "#0a0a0a", color: "#f5f5f7", duration: 0.4 });
-                    gsap.to(".bento-card", { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: "power4.out" });
+                    gsap.to("body", { backgroundColor: "#0a0a0a", color: "#f5f5f7", duration: 0.5, ease: "power2.inOut" });
+                    gsap.to(".bento-card", { opacity: 1, y: 0, stagger: 0.08, duration: 1, ease: "power4.out" });
                 },
                 onLeaveBack: () => {}
             });
@@ -1212,7 +1233,7 @@
                     trigger: "#collab",
                     start: "top center",
                     end: "bottom center",
-                    scrub: true
+                    scrub: 0.2
                 }
             });
 
@@ -1220,34 +1241,35 @@
             gsap.from("#valTitle, #valSub", {
                 scrollTrigger: {
                     trigger: "#value-add",
-                    start: "top 75%",
+                    start: "top 80%",
                 },
-                y: 50,
+                y: 30,
                 opacity: 0,
-                duration: 1.2,
-                stagger: 0.2,
+                duration: 1,
+                stagger: 0.1,
                 ease: "power4.out"
             });
 
             // Subtle Parallax for the Background Image in Value Section
             gsap.to(".parallax-bg-img", {
-                y: "20%",
+                y: "15%",
                 ease: "none",
                 scrollTrigger: {
                     trigger: "#value-add",
                     start: "top bottom",
                     end: "bottom top",
-                    scrub: true
+                    scrub: 0.1
                 }
             });
 
             gsap.from(".animate-draw", {
                 strokeDasharray: 1000,
                 strokeDashoffset: 1000,
-                duration: 3,
+                duration: 2.5,
+                ease: "power2.inOut",
                 scrollTrigger: {
                     trigger: "#analytics",
-                    start: "top 70%"
+                    start: "top 75%"
                 }
             });
 
@@ -1257,18 +1279,18 @@
                     if (targetId === "#") return;
                     e.preventDefault();
                     gsap.to(window, {
-                        duration: 1.2,
+                        duration: 1,
                         scrollTo: { y: targetId, autoKill: false },
-                        ease: "power4.inOut"
+                        ease: "expo.inOut"
                     });
                 });
             });
 
             document.getElementById('scrollEnterBtn').addEventListener('click', () => {
                 gsap.to(window, {
-                    duration: 1.2,
+                    duration: 1,
                     scrollTo: { y: "#work", autoKill: false },
-                    ease: "power4.inOut"
+                    ease: "expo.inOut"
                 });
             });
         }
@@ -1276,19 +1298,20 @@
         const cursor = document.getElementById('cursor');
         const ring = document.getElementById('cursorRing');
 
+        // High frequency cursor tracking
         document.addEventListener('mousemove', (e) => {
             gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0 });
-            gsap.to(ring, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.25 });
-        });
+            gsap.to(ring, { x: e.clientX - 20, y: e.clientY - 20, duration: 0.15, ease: "power1.out" });
+        }, { passive: true });
 
         document.querySelectorAll('a, button, .group, .collab-card, .bento-card, input, textarea, label').forEach(el => {
             el.addEventListener('mouseenter', () => {
-                gsap.to(ring, { scale: 1.5, borderColor: '#00e5ff', duration: 0.3 });
-                gsap.to(cursor, { scale: 0, duration: 0.3 });
+                gsap.to(ring, { scale: 1.4, borderColor: '#00e5ff', duration: 0.2, ease: "power2.out" });
+                gsap.to(cursor, { scale: 0, duration: 0.2, ease: "power2.out" });
             });
             el.addEventListener('mouseleave', () => {
-                gsap.to(ring, { scale: 1, borderColor: 'rgba(255,255,255,0.2)', duration: 0.3 });
-                gsap.to(cursor, { scale: 1, duration: 0.3 });
+                gsap.to(ring, { scale: 1, borderColor: 'rgba(255,255,255,0.2)', duration: 0.2, ease: "power2.out" });
+                gsap.to(cursor, { scale: 1, duration: 0.2, ease: "power2.out" });
             });
         });
 
@@ -1337,9 +1360,10 @@
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             }
             setAppHeight();
-        });
+        }, { passive: true });
     </script>
 </body>
 </html>
