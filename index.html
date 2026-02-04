@@ -516,6 +516,15 @@
         .welcome-para {
             margin-bottom: 1rem;
         }
+
+        /* Sublte motion for welcome paragraphs */
+        @keyframes subtleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .welcome-para-motion {
+            animation: subtleFloat 5s ease-in-out infinite;
+        }
     </style>
 </head>
 <body>
@@ -527,24 +536,25 @@
     <div id="welcome-page">
         <img src="https://res.cloudinary.com/dj159rgsr/image/upload/v1769669345/494170991_18500361148005369_768825489208285612_n_ajtr3n.jpg" class="welcome-bg-img" alt="Krishna Rathi Aesthetic Intro">
         <div class="welcome-content">
-            <span class="text-[10px] md:text-xs uppercase tracking-[0.6em] text-cyan-400 mb-6 block font-bold opacity-0" id="welcomeTop">A Note to Brands</span>
+            <span class="text-[10px] md:text-xs uppercase tracking-[0.6em] text-cyan-400 mb-6 block font-bold opacity-0 italic" id="welcomeTop">A Note to Brands</span>
             <h2 class="text-4xl md:text-5xl lg:text-6xl text-white mb-10 opacity-0" id="welcomeTitle">From Krishna Rathi</h2>
             
             <div id="welcome-text-reveal" class="space-y-4 md:space-y-5 text-sm md:text-base lg:text-lg text-gray-200 font-light leading-relaxed mb-12 text-center px-4 max-w-4xl mx-auto">
-                <p class="welcome-para"><span class="welcome-line"><span class="welcome-line-inner">“Every piece of content I create is built with one responsibility in mind</span></span>
+                <!-- Quotes Removed, Body Font Normal, Motion Maintained -->
+                <p class="welcome-para welcome-para-motion"><span class="welcome-line"><span class="welcome-line-inner">Every piece of content I create is built with one responsibility in mind</span></span>
                 <span class="welcome-line"><span class="welcome-line-inner">the responsibility I hold towards my audience. My audience trusts me</span></span>
-                <span class="welcome-line"><span class="welcome-line-inner">with their attention. That trust is never taken lightly.”</span></span></p>
+                <span class="welcome-line"><span class="welcome-line-inner">with their attention. That trust is never taken lightly.</span></span></p>
 
-                <p class="welcome-para"><span class="welcome-line"><span class="welcome-line-inner">“So before any collaboration is considered, one question comes first:</span></span>
-                <span class="welcome-line"><span class="welcome-line-inner">Can this brand genuinely educate, add value, or expand my audience’s understanding in some way?”</span></span></p>
+                <p class="welcome-para welcome-para-motion"><span class="welcome-line"><span class="welcome-line-inner">So before any collaboration is considered, one question comes first:</span></span>
+                <span class="welcome-line"><span class="welcome-line-inner">Can this brand genuinely educate, add value, or expand my audience’s understanding in some way?</span></span></p>
 
-                <p class="welcome-para hidden md:block"><span class="welcome-line"><span class="welcome-line-inner">“I do not treat collaborations as promotions. Rather I think of them as brand moments</span></span>
-                <span class="welcome-line"><span class="welcome-line-inner">where people walk away knowing something, feeling something, or seeing something differently.”</span></span></p>
+                <p class="welcome-para hidden md:block welcome-para-motion"><span class="welcome-line"><span class="welcome-line-inner">I do not treat collaborations as promotions. Rather I think of them as brand moments</span></span>
+                <span class="welcome-line"><span class="welcome-line-inner">where people walk away knowing something, feeling something, or seeing something differently.</span></span></p>
 
-                <p class="welcome-para"><span class="welcome-line"><span class="welcome-line-inner">“If this way of thinking aligns with you, we will be happy to proceed further,</span></span>
-                <span class="welcome-line"><span class="welcome-line-inner">learn about your brand and create a forever brand memory for this world.”</span></span></p>
+                <p class="welcome-para welcome-para-motion"><span class="welcome-line"><span class="welcome-line-inner">If this way of thinking aligns with you, we will be happy to proceed further,</span></span>
+                <span class="welcome-line"><span class="welcome-line-inner">learn about your brand and create a forever brand memory for this world.</span></span></p>
 
-                <p class="welcome-para"><span class="welcome-line mt-6 block"><span class="welcome-line-inner text-cyan-400 font-medium italic">When philosophies match, collaboration naturally makes sense!</span></span></p>
+                <p class="welcome-para welcome-para-motion"><span class="welcome-line mt-6 block"><span class="welcome-line-inner text-cyan-400 font-medium italic">When philosophies match, collaboration naturally makes sense!</span></span></p>
             </div>
 
             <div id="enterBtn" class="inline-flex items-center gap-6 px-12 py-5 bg-white text-black rounded-full cursor-pointer group hover:scale-105 transition-all opacity-0 shadow-2xl">
